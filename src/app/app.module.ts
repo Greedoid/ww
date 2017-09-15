@@ -4,19 +4,18 @@ import { FormsModule } from '@angular/forms';
 
 import { ConvertToSpacesPipe } from './shared/convert-to-spaces.pipe';
 import { AppComponent } from './app.component';
-import { ProductListComponent } from './products/product-list.component';
-import { StarComponent } from "./shared/star.component";
+import { HttpClient } from "@angular/common/http";
+import { MainWeatherComponent } from "./weather/weather.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-    ProductListComponent,
-    ConvertToSpacesPipe,
-    StarComponent
+    MainWeatherComponent
   ],
   imports: [
-    BrowserModule,
-    FormsModule
+    BrowserModule
+    //FormsModule,
+    //HttpClient
   ],
   providers: [],
   bootstrap: [AppComponent]
