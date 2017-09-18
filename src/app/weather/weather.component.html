@@ -1,5 +1,18 @@
 <div class='panel panel-primary'>
     <div class='panel-heading'>
         {{finished}}
+        <!--{{vals}}-->
+        {{vals | json}}
+        <tr ng-repeat="(key, value) in vals">
+            <td> {{key}} </td> <td> {{ value }} </td>
+          </tr>
+        <!--
+        <div *ngFor="let item of vals">
+            <h2>{{item}}</h2>
+                 <!--<div *ngFor="let content of type.contents">
+                      <p>{{content.id}}</p>
+                      <p>{{content.perishable}}</p>
+                  </div>
+          </div>-->
     </div>     
 </div>

@@ -5,7 +5,6 @@ import { WeatherDay, WeatherWidget } from "./weather";
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/map'
 
-import {HttpClientModule} from '@angular/common/http';
 
 @Component({
     selector: 'wwidget',
@@ -15,20 +14,31 @@ import {HttpClientModule} from '@angular/common/http';
 
 export class MainWeatherComponent implements OnInit 
 {
-    private data: Observable<Array<number>>;
-    private values: Array<number> = [];
+    private data: Observable<Response>;
+    private values: string;
     private anyErrors: boolean;
     private finished: boolean;
-    private headers = new Headers({ 'Content-Type': 'application/json', "apikey": 'jAV7fJMl2FGrEUIuAAFnu562wjbo8AHD' }); // ... Set content type to JSON
-    private options = new RequestOptions({ headers: this.headers });
+    //private headers = new Headers({ 'Content-Type': 'application/json', "apikey": 'jAV7fJMl2FGrEUIuAAFnu562wjbo8AHG' }); 
+    private url = 'http://dataservice.accuweather.com/currentconditions/v1/348308?apikey=jAV7fJMl2FGrEUIuAAFnu562wjbo8AHD&details=true'
+    //private options = new RequestOptions({ headers: this.headers });
+    public vals: string;
 
-    constructor() {
+    constructor(public http: Http) {
     }
+    /*
+    JSON getLocations(string keyword) {
+    }
+    */
 
     ngOnInit(): void {
         this.data = new Observable(observer => {
             // Calls the onNext() function in the observer
-            observer.next([20]);
+            let currString = this.http.get(this.url);
+            //console.log(currString);
+            //console.log(currString.map((res:Response) => res.json().data));
+            let resp = currString.map((res:Response) => res.json)
+            observer.next(currString.map((res:Response) => res.json))
+            observer.next(resp);
             // Calls the onComplete() function in the observer
             //this.result = this.http.get('http://dataservice.accuweather.com/locations/v1/regions')
             observer.complete();
@@ -41,7 +51,7 @@ export class MainWeatherComponent implements OnInit
           // Subscribe to the observable
           let subscription = this.data.subscribe(
             // onNext() function
-            value => console.log('value is ' + value),
+            value => console.log(value),
             // onError() function
             error => console.log('error is ' + error),
             // onComplete() function
