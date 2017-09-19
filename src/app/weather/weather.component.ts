@@ -15,10 +15,11 @@ import 'rxjs/add/operator/map'
 export class MainWeatherComponent implements OnInit 
 {
     private data: Observable<Response>;
-    private values: string;
+    private values: Response;
     private anyErrors: boolean;
     private finished: boolean;
-    //private headers = new Headers({ 'Content-Type': 'application/json', "apikey": 'jAV7fJMl2FGrEUIuAAFnu562wjbo8AHG' }); 
+    private headers = new Headers({ 'Content-Type': 'application/json', "apikey": 'jAV7fJMl2FGrEUIuAAFnu562wjbo8AHD' }); 
+    //private url = 'https://google.com'
     private url = 'http://dataservice.accuweather.com/currentconditions/v1/348308?apikey=jAV7fJMl2FGrEUIuAAFnu562wjbo8AHD&details=true'
     //private options = new RequestOptions({ headers: this.headers });
     public vals: string;
@@ -30,33 +31,31 @@ export class MainWeatherComponent implements OnInit
     }
     */
 
+    extractData(response) {
+        console.log('Raw response:', response);
+        console.log('Formatted response:', response.json());
+        const body = response.json();
+        return body || { };
+    }
+
+    handleData(data) {
+        console.log('Here are the usable data', data);
+        // Insert Business logic here
+      }
+    
+      handleComplete() {
+        console.log('Complete');
+      }
+    
+      handleError(error) {
+        console.log('error:', error)
+        return Observable.throw(error);
+    }
+
     ngOnInit(): void {
-        this.data = new Observable(observer => {
-            // Calls the onNext() function in the observer
-            let currString = this.http.get(this.url);
-            //console.log(currString);
-            //console.log(currString.map((res:Response) => res.json().data));
-            let resp = currString.map((res:Response) => res.json)
-            observer.next(currString.map((res:Response) => res.json))
-            observer.next(resp);
-            // Calls the onComplete() function in the observer
-            //this.result = this.http.get('http://dataservice.accuweather.com/locations/v1/regions')
-            observer.complete();
-            // Executed when there are no more subscribers
-            return () => {
-              console.log('no more subscribers');
-            };
-          });
-           
-          // Subscribe to the observable
-          let subscription = this.data.subscribe(
-            // onNext() function
-            value => console.log(value),
-            // onError() function
-            error => console.log('error is ' + error),
-            // onComplete() function
-            () => console.log('completed')
-          );
-        //this.toggleImage()
+        this.http.get(this.url)
+        //this.http.get('https://jsonplaceholder.typicode.com/posts')
+            .map(this.extractData)
+            .subscribe(this.handleData, this.handleError, this.handleComplete);
     }
 }
