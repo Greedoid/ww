@@ -1,8 +1,11 @@
 export class WeatherDay {
     constructor(
-        public name: string,
-        public icon: string, 
-        public temp: number
+        public name?: string,
+        public iconLink?: string, 
+        public date?: string,
+        public condition?: string, 
+        public tempHigh?: number,
+        public tempLow?: number
     ) {}
 }
 
