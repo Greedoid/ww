@@ -1,11 +1,20 @@
 <div class='panel panel-primary'>
     <div class='panel-heading'>
-        {{finished}}
-        <!--{{vals}}-->
-        {{ dayObservable | async | json }}
-        <tr *ngFor="let item of dayObservable | async | json">
-            <h2>{{item}}</h2>
+        <tr *ngFor="let item of dayObservable | async">
+            <h6>Date: {{item.date | dayOfWeek }}</h6>
+            <h6>Condition: {{item.condition}}</h6>
+            <div *ngIf="isFahr"> 
+                <h6>High: {{item.displayHigh}}</h6>
+                <h6>Low: {{item.displayLow}}</h6>
+            </div>
+            <div *ngIf="!isFahr">
+                <h6>High (Celsius): {{item.celsiusHigh}}</h6>
+                <h6>Low (Celsius) : {{item.celsiusLow}}</h6>
+            </div>
         <br/>
         </tr>
+        <button (click) = swapTemp()>
+            Switch to Celsius
+        </button>
     </div>     
 </div>

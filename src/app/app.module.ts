@@ -5,11 +5,14 @@ import { AppComponent } from './app.component';
 import { JsonPipe } from '@angular/common';
 import { HttpModule } from "@angular/http";
 import { MainWeatherComponent } from "./weather/weather.component";
+import { DayOfWeekPipe } from "./shared/dayOfWeek.pipe"
+//import { Button } from "./shared/buttons.component"
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainWeatherComponent
+    MainWeatherComponent,
+    DayOfWeekPipe
   ],
   imports: [
     BrowserModule,

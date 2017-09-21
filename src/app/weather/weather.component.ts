@@ -18,13 +18,15 @@ export class MainWeatherComponent implements OnInit
     private values: Response;
     private anyErrors: boolean;
     private finished: boolean;
+    private isFahr: boolean = true;
     public dayObservable: Observable<Array<WeatherDay>>
+    public currDayObservable: Observable<Array<WeatherDay>>
     public days: Array<WeatherDay> = [];
     private headers = new Headers({ 'Content-Type': 'application/json', "apikey": 'jAV7fJMl2FGrEUIuAAFnu562wjbo8AHD' }); 
     private url = 'http://dataservice.accuweather.com/currentconditions/v1/348308?apikey=jAV7fJMl2FGrEUIuAAFnu562wjbo8AHD&details=true'
     //private options = new RequestOptions({ headers: this.headers });
     public vals: string;
-    private cityMap = {'Chicago' : '348308'}
+    public cityMap = {'Chicago' : '348308'};
     private apiKey = 'lyDJABKhfcoAkwR2fK5pYfvPOxkhW4Aq'
     // Will need one for each borough in NYC
 
@@ -49,30 +51,18 @@ export class MainWeatherComponent implements OnInit
             currDays.push(new WeatherDay(
                 element['Day']['IconPhrase'], 
                 "",
-                element['Date'], 
+                new Date(element['Date']).getDay(), 
                 element['Day']['IconPhrase'],
                 element['Temperature']['Maximum']['Value'],
-                element['Temperature']['Minimum']['Value']
+                element['Temperature']['Minimum']['Value'],
+                element['Temperature']['Maximum']['Value'],
+                element['Temperature']['Minimum']['Value'],
+                Math.round((element['Temperature']['Maximum']['Value'] -32) * (5/9)),
+                Math.round((element['Temperature']['Minimum']['Value'] - 32) * (5/9))
             )
         )
         });
         return currDays
-    }
-    
-    extractDays(data) {
-        let currDays = new Array<WeatherDay>()
-        data['DailyForecasts'].forEach(element => {
-            currDays.push(new WeatherDay(
-                element['Day']['IconPhrase'], 
-                "",
-                element['Date'], 
-                element['Day']['IconPhrase'],
-                element['Temperature']['Maximum']['Value'],
-                element['Temperature']['Minimum']['Value']
-            )
-        )
-        });
-        this.days = currDays
     }
     
     handleComplete() {
@@ -83,19 +73,12 @@ export class MainWeatherComponent implements OnInit
         console.log('error:', error)
         return Observable.throw(error);
     }
-
-    get5DayForecast(locationName) {
-        let url = 'http://dataservice.accuweather.com/forecasts/v1/daily/5day/' + this.cityMap[locationName] + '?apikey=' + this.apiKey
-        this.http.get(url)
-            .map(this.extractData)
-            .subscribe(this.extractDays, this.handleError, this.handleComplete)
-    }
-
     
     get5DayForecastMap(locationName) {
         let url = 'http://dataservice.accuweather.com/forecasts/v1/daily/5day/' + this.cityMap[locationName] + '?apikey=' + this.apiKey
         this.dayObservable = this.http.get(url)
             .map(this.extractDaysMap)
+        this.currDayObservable = this.dayObservable
     }
 
     getCurrentConditions(locationName){
@@ -103,6 +86,10 @@ export class MainWeatherComponent implements OnInit
         this.http.get(this.url) 
             .map(this.extractData)
             .subscribe(this.handleData, this.handleError, this.handleComplete);
+    }
+
+    swapTemp(){
+        this.isFahr = !this.isFahr;
     }
 
     ngOnInit(): void {
